@@ -1,4 +1,4 @@
-from django.db.models import F
+from django.db.models import F, Count, Sum, Avg, Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -43,4 +43,30 @@ def frequency(request, question_id):
     return render(request, "polls/frequency.html", {
         "question": question,
         "choix_stats": choix_stats
+    })
+
+
+def statistics(request):
+    nb_sondages = Question.objects.count()
+    nb_choix = Choice.objects.count()
+
+    total_votes_dict = Choice.objects.aggregate(total=Sum('votes'))
+    total_votes = total_votes_dict['total'] or 0
+
+    moyenne_votes = (total_votes / nb_sondages) if nb_sondages > 0 else 0
+
+    derniere_date = Question.objects.aggregate(derniere=Max('pub_date'))['derniere']
+    derniere_question = Question.objects.filter(pub_date=derniere_date).first()
+
+    plus_populaire = Question.get_most_popular()
+    moins_populaire = Question.get_least_popular()
+
+    return render(request, "polls/statistics.html", {
+        "nb_sondages": nb_sondages,
+        "nb_choix": nb_choix,
+        "total_votes": total_votes,
+        "moyenne_votes": moyenne_votes,
+        "derniere_question": derniere_question,
+        "plus_populaire": plus_populaire,
+        "moins_populaire": moins_populaire,
     })

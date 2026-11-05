@@ -2,7 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
-from django.db.models import Sum
+from django.db.models import Sum, Count
 
 MAX_LENGTH = 20
 
@@ -14,6 +14,14 @@ def text_excerpt(text, max_length):
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
+
+    @classmethod
+    def get_most_popular(cls):
+        return cls.objects.annotate(total_votes=Sum('choice__votes')).order_by('-total_votes').first()
+
+    @classmethod
+    def get_least_popular(cls):
+        return cls.objects.annotate(total_votes=Sum('choice__votes')).order_by('total_votes').first()
 
     def __str__(self):
         return "{} {}".format(self.pub_date, text_excerpt(self.question_text, MAX_LENGTH))

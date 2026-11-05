@@ -1,0 +1,30 @@
+<h1>Statistiques globales</h1>
+
+<ul>
+    <li><strong>Nombre total de sondages :</strong> {{ nb_sondages }}</li>
+    <li><strong>Nombre total de choix :</strong> {{ nb_choix }}</li>
+    <li><strong>Nombre total de votes :</strong> {{ total_votes }}</li>
+    <li><strong>Moyenne de votes par sondage :</strong> {{ moyenne_votes|floatformat:2 }}</li>
+
+    {% if derniere_question %}
+        <li><strong>Dernière question enregistrée :</strong> {{ derniere_question.question_text }} (le {{ derniere_question.pub_date|date:"d/m/Y" }})</li>
+    {% endif %}
+</ul>
+
+<hr>
+
+<h2>Records (Optionnel)</h2>
+<ul>
+    {% if plus_populaire %}
+        <li><strong>Question la plus populaire :</strong> {{ plus_populaire.question_text }} ({{ plus_populaire.total_votes }} votes)</li>
+    {% else %}
+        <li>Aucun vote enregistré pour le moment.</li>
+    {% endif %}
+
+    {% if moins_populaire %}
+        <li><strong>Question la moins populaire :</strong> {{ moins_populaire.question_text }} ({{ moins_populaire.total_votes }} votes)</li>
+    {% endif %}
+</ul>
+
+<hr>
+<a href="{% url 'polls:index' %}">Retour à l'accueil</a>

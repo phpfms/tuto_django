@@ -1,0 +1,14 @@
+<h1>Fréquence des votes : {{ question.question_text }}</h1>
+
+<ul>
+{% for choix in choix_stats %}
+    <li>
+        {{ choix.0 }} : {{ choix.1 }} vote{{ choix.1|pluralize }}
+        ({{ choix.2|floatformat:2 }})
+    </li>
+{% empty %}
+    <li>Aucun vote pour le moment.</li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'polls:all_polls' %}">Retour à la liste</a>
